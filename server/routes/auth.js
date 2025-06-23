@@ -6,7 +6,8 @@ const router = express.Router();
 
 // Generate OTP
 const generateOTP = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  // return Math.floor(100000 + Math.random() * 900000).toString();
+  return 1111;
 };
 
 // Citizen OTP Login

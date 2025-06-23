@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, FileText, Wrench, Package, ClipboardList, Shield } from 'lucide-react';
+import {
+  LogOut,
+  FileText,
+  Wrench,
+  Package,
+  ClipboardList,
+  Shield,
+  Menu
+} from 'lucide-react';
 import DataTable from './DataTable';
 import api from '../services/api';
 
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'complaints' | 'defects' | 'qubes' | 'khatas'>('complaints');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [data, setData] = useState({
     complaints: [],
     defects: [],
@@ -163,9 +172,17 @@ const AdminDashboard: React.FC = () => {
                 <p className="text-green-600">Manage all waste management operations</p>
               </div>
             </div>
+            <div className="lg:hidden">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="text-green-600 hover:text-green-800 focus:outline-none"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+            </div>
             <button
               onClick={logout}
-              className="flex items-center px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+              className="hidden lg:flex items-center px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
             >
               <LogOut className="w-5 h-5 mr-2" />
               Logout
@@ -174,9 +191,36 @@ const AdminDashboard: React.FC = () => {
         </div>
       </header>
 
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white shadow-sm border-t border-b border-green-100 px-4 py-2">
+          <div className="grid grid-cols-1 gap-2">
+            {tabs.map(({ key, label, icon: Icon }) => (
+              <button
+                key={key}
+                onClick={() => {
+                  setActiveTab(key as any);
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center justify-between px-4 py-2 rounded-md font-medium transition-all ${
+                  activeTab === key ? 'bg-green-500 text-white' : 'text-gray-700 hover:text-green-600'
+                }`}
+              >
+                <span className="flex items-center">
+                  <Icon className="w-5 h-5 mr-2" />
+                  {label}
+                </span>
+                <span className="text-sm font-semibold">{tabs.find(t => t.key === key)?.count}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Main */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Desktop Tabs */}
+        <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {tabs.map(({ key, label, icon: Icon, count }) => (
             <div
               key={key}
@@ -193,9 +237,7 @@ const AdminDashboard: React.FC = () => {
                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
                   activeTab === key ? 'bg-green-500' : 'bg-green-100'
                 }`}>
-                  <Icon className={`w-6 h-6 ${
-                    activeTab === key ? 'text-white' : 'text-green-600'
-                  }`} />
+                  <Icon className={`w-6 h-6 ${activeTab === key ? 'text-white' : 'text-green-600'}`} />
                 </div>
               </div>
             </div>

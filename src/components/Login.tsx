@@ -84,8 +84,8 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-green-100 to-white">
-      {/* Left Branding Section */}
-      <div className="w-full md:w-[70%] p-6 sm:p-8 md:p-16 bg-green-700 text-white flex flex-col justify-between">
+      {/* Left Branding Section - Hidden on mobile */}
+      <div className="hidden md:flex w-full md:w-[70%] p-6 sm:p-8 md:p-16 bg-green-700 text-white flex-col justify-between">
         <div className="flex items-center gap-4 mb-10">
           <img src={nacLogo} alt="NAC Logo" className="w-12 h-12" />
           <h1 className="text-2xl font-bold">GOPALPUR N.A.C</h1>
@@ -117,11 +117,11 @@ const Login: React.FC = () => {
         </p>
       </div>
 
-      {/* Right Login Form Section */}
-      <div className="w-full md:w-[30%] flex items-center justify-center p-6 sm:p-8 md:p-12 bg-white">
+      {/* Right Login Form Section - Always visible */}
+      <div className="w-full md:w-[30%] bg-white p-6 sm:p-8 md:p-12 flex flex-col justify-center min-h-screen md:min-h-0">
         <div className="w-full max-w-md space-y-6">
-          {/* Logo */}
-          <div className="flex justify-center">
+          {/* Logo (only for mobile view) */}
+          <div className="flex justify-center md:hidden">
             <img src={nacLogo} alt="Logo" className="w-14 h-14 object-contain" />
           </div>
 
@@ -188,7 +188,7 @@ const Login: React.FC = () => {
                     value={formData.otp}
                     onChange={handleInputChange}
                     maxLength={6}
-                    placeholder="Enter 6-digit OTP"
+                    placeholder="Enter 1111 as OTP"
                     className="w-full px-4 py-2 border rounded-lg text-center focus:ring-2 focus:ring-green-500"
                     required
                   />

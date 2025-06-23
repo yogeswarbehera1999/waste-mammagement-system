@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, Wrench, MapPin, Package, ClipboardList, FileText } from 'lucide-react';
+import {
+  LogOut, Wrench, MapPin, Package, ClipboardList, FileText, Menu
+} from 'lucide-react';
 import DefectForm from './forms/DefectForm';
 import QubeForm from './forms/QubeForm';
 import KhataForm from './forms/KhataForm';
@@ -11,6 +13,7 @@ import api from '../services/api';
 const SupervisorDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'defect' | 'track' | 'qube' | 'khata' | 'complaints'>('defect');
   const [showForm, setShowForm] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [data, setData] = useState({
     defects: [],
     qubes: [],
@@ -238,20 +241,57 @@ const SupervisorDashboard: React.FC = () => {
               <h1 className="text-2xl font-bold text-green-800">Supervisor Dashboard</h1>
               <p className="text-green-600">Manage waste collection operations</p>
             </div>
-            <button
-              onClick={logout}
-              className="flex items-center px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
-            >
-              <LogOut className="w-5 h-5 mr-2" />
-              Logout
-            </button>
+            <div className="flex gap-4 items-center">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="md:hidden p-2 rounded text-green-700 hover:bg-green-100"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+              <button
+                onClick={logout}
+                className="hidden md:flex items-center px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                <LogOut className="w-5 h-5 mr-2" />
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation Tabs */}
-        <div className="flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg mb-8 w-fit">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="md:hidden flex flex-col gap-2 mb-6 bg-gray-100 p-4 rounded-lg">
+            {tabs.map(({ key, label, icon: Icon }) => (
+              <button
+                key={key}
+                onClick={() => {
+                  setActiveTab(key as any);
+                  setShowForm(false);
+                  setMenuOpen(false);
+                }}
+                className={`flex items-center px-4 py-2 rounded-md font-medium text-sm transition ${
+                  activeTab === key ? 'bg-green-500 text-white' : 'text-gray-700 hover:bg-green-100'
+                }`}
+              >
+                <Icon className="w-4 h-4 mr-2" />
+                {label}
+              </button>
+            ))}
+            <button
+              onClick={logout}
+              className="flex items-center px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </button>
+          </div>
+        )}
+
+        {/* Desktop Tabs */}
+        <div className="hidden md:flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg mb-8 w-fit">
           {tabs.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
@@ -271,7 +311,7 @@ const SupervisorDashboard: React.FC = () => {
           ))}
         </div>
 
-        {/* Content */}
+        {/* Tab Content */}
         {renderTabContent()}
       </div>
 
